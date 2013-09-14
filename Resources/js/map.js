@@ -22,7 +22,7 @@ var custom_button_func = function(){
 
 
 function map_init() {
-
+    var map;
     OpenLayers.Lang.setCode(document.lang_code);
 
     map = new OpenLayers.Map("map", {
@@ -55,20 +55,31 @@ function map_init() {
 	new OpenLayers.Control.ZoomToMaxExtent(),
 	new OpenLayers.Control.PanZoomBar({}),
 	new OpenLayers.Control.LayerSwitcher({}),
-	new OpenLayers.Control.MousePosition({})
+	new OpenLayers.Control.MousePosition({}),
+        new OpenLayers.Control.Navigation()
+
     ]);
 
     map.addLayers([osm]);
-    if (!map.getCenter()) {
+
+    var lon = 51.6713889;
+    var lat = 32.6597222;
+    var zoom = 10;
+
+    var proj = new OpenLayers.Projection("EPSG:4326");
+    var point = new OpenLayers.LonLat(lon, lat);
+
+    map.setCenter(point.transform(proj, map.getProjectionObject()), zoom);
+    /*if (!map.getCenter()) {
 	map.zoomToMaxExtent();
-    }
+    }*/
 
 
-    var wfsLayer = new OpenLayers.Layer.Vector("Test Polygons", {
+    /* var wfsLayer = new OpenLayers.Layer.Vector("Test Polygons", {
         projection : "EPSG:4326",
         extractAttributes: true,
         visibility: true
-    });
+    }); */
 
 
 
