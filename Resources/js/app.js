@@ -1,8 +1,8 @@
 function init() {
     $("#open").on("click", function(){
-	Ti.UI.currentWindow.openFileChooserDialog(
-	    function(){},
-	    {multiple: false, title: "Open MbTiles file *.mbtiles"});
+	var file = Ti.UI.currentWindow.openFileChooserDialog(function(){},
+							     {multiple: false,
+							      title: "Open MbTiles file *.mbtiles"});
     });
     $("#exit").on("click", function(){
 	  if (confirm('Are you sure you want to quit?')) {
