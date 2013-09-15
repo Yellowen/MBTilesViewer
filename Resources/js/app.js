@@ -10,6 +10,26 @@ function init() {
 	  }
     });
 
+    $("#aboutbtn").on("click", function(){
+	if (! $("#about").hasClass("show")) {
+	    $("#map").fadeOut(400);
+	    $("#about").delay(450).fadeIn(400);
+	    $("#about").addClass("show");
+	}
+    });
+
+    $("#back").on("click", function(){
+	if ($("#about").hasClass("show")) {
+	    $("#about").fadeOut(400);
+	    $("#map").delay(450).fadeIn(400);
+	    $("#about").removeClass("show");
+	}
+    });
+
+    $("#website").on("click", function(){
+	Ti.Platform.openURL("http://www.yellowen.com");
+    });
+
     var menu = $("#menu")
     var map = $("#map");
 
