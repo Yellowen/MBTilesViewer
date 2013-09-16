@@ -68,17 +68,21 @@ class MbtilesHandler(tornado.web.RequestHandler):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 3:
-        print "mbserv port mbfile"
-        print "You have to provide an mbtile file and a port"
+    ## if len(sys.argv) < 3:
+    ##     print "mbserv port mbfile"
+    ##     print "You have to provide an mbtile file and a port"
+
+    print ">>>>>>> ", os.environ
+    mbtilefile = os.environ["servfile"]
+    port =  sys.argv[1]  # os.environ["servport"]
 
     urls = [
         (r"/", MainHandler),
-        (r"/meta/", MetaDataHandler, {"mbtiles": sys.argv[1]}),
+        (r"/meta/", MetaDataHandler, {"mbtiles": mbtilefile}),
     ]
 
     tilesets = [
-        ('tiles', sys.argv[2], ['png', 'json'], ),
+        ('tiles', mbtilefile, ['png', 'json'], ),
     ]
 
     for t in tilesets:
@@ -90,8 +94,8 @@ if __name__ == "__main__":
                  )
             )
 
-    print ">> Starting server on %s" % sys.argv[1]
+    print ">> Starting server on %s" % port
 
     application = tornado.web.Application(urls, debug=True)
-    application.listen(int(sys.argv[1]))
+    application.listen(int(port))
     tornado.ioloop.IOLoop.instance().start()
