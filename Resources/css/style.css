@@ -119,3 +119,6 @@ button:hover {
     margin: 0 auto;
     margin-bottom: 20px;
 }
+.olImageLoadError {
+    display: none;
+}
