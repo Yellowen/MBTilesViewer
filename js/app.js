@@ -1,13 +1,29 @@
+function chooseFile(name) {
+    var chooser = $(name);
+    chooser.change(function(evt) {
+
+	var filepath = $(this).val();
+	port = getRandomInt(3000, 9000).toString();
+	console.log(filepath);
+	console.log(port);
+	$("body").data("filepath", filepath);
+	run_server(filepath, port);
+	map_init();
+	chooser.val("");
+    });
+
+    chooser.trigger('click');
+}
+
 function init() {
     $("#open").on("click", function(){
-	var file = Ti.UI.currentWindow.openFileChooserDialog(function(){},
-							     {multiple: false,
-							      title: "Open MbTiles file *.mbtiles"});
+	chooseFile("#fileDialog");
     });
     $("#exit").on("click", function(){
-	  if (confirm('Are you sure you want to quit?')) {
-	      Ti.App.exit();
-	  }
+	if (confirm('Are you sure you want to quit?')) {
+	    server.kill("SIGKILL");
+	    gui.App.quit();
+	}
     });
 
     $("#aboutbtn").on("click", function(){
@@ -27,7 +43,7 @@ function init() {
     });
 
     $("#website").on("click", function(){
-	Ti.Platform.openURL("http://www.yellowen.com");
+	    gui.Shell.openExternal("http://www.yellowen.com");
     });
 
     var menu = $("#menu")
@@ -47,6 +63,9 @@ function resize_map(){
     var map_width = width;
     var map_height = height - header_height;
 
+    console.log(height);
+    console.log("WIDTH: " + map_width);
+    console.log("HEIGHT: " + map_height);
     // set new size
     $("#map").width(map_width).height(map_height);
 
@@ -58,9 +77,12 @@ function resize_map(){
 
 $(function(){
     init();
-    var window = Ti.UI.getCurrentWindow();
+    //var window = Ti.UI.getCurrentWindow();
     // Set the #map size
     resize_map();
-    // bound the resize_map function to window resize event
-    window.addEventListener('resized', function (event){resize_map()});
+    $(window).resize(resize_map);
+    gui.Window.get().on("close", function() {
+	server.kill("SIGKILL");
+	this.close(true);
+    });
 });

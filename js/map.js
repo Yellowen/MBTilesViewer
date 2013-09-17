@@ -1,11 +1,14 @@
 $(function(){
-    map_init();
+    if (mbfile != "") {
+	map_init();
+    }
 });
 
 function map_init() {
 
     // create TMS layer using MBTiles sqlite database
-    var mbTiles = new OpenLayers.Layer.TMS("Local MBTiles File", "http://localhost:8988/tiles/", {
+    console.log("create new TMS layer on " + port);
+    var mbTiles = new OpenLayers.Layer.TMS("Local MBTiles File", "http://localhost:" + port + "/tiles/", {
 	getURL: mbtilesURL,
 	//attribution: "Tiles Courtesy of <a href='http://tiles.mapbox.com/mapbox/map/geography-class' target='_blank'>MapBox</a>",
 	transitionEffect: "resize",
@@ -32,7 +35,7 @@ function map_init() {
 	return this.url + (z) +"/"+ long2tile(bounds.left, z)  +"/"+  lat2tile(bounds.top, z)  + ".png";
     }
 
-    var map = new OpenLayers.Map('map', {
+    map = new OpenLayers.Map('map', {
 	//projection: "EPSG:900913",
 	layers: [mbTiles],
 	controls: []
@@ -52,19 +55,29 @@ function map_init() {
     var lat;
     var zoom;
 
-    $.get("localhost:8988/meta/", function(data){
-	console.log(data);
-	console.log(typeof(data));
-    });
-    //var lon = 51;
-    //var lat = 32;
-    //var zoom = 10;
+    console.log("Fetching metadata from " + port);
+    $.ajax({url: "http://localhost:" + port + "/meta/",
+	    async: true,
+	    success: function(data){
+		console.log("Metadata fetched");
+		var center = data["center"].split(",");
+		lon = center[0];
+		lat = center[1];
+		zoom = center[2];
+		console.log ("LON: " + lon);
+		console.log("LAT: " + lat);
+		console.log("ZOOM: " + zoom);
+		var proj = new OpenLayers.Projection("EPSG:4326");
+		var point = new OpenLayers.LonLat(lon, lat);
 
-    var proj = new OpenLayers.Projection("EPSG:4326");
-    var point = new OpenLayers.LonLat(lon, lat);
+		map.setCenter(point.transform(proj, map.getProjectionObject()), zoom);
 
-    map.setCenter(point.transform(proj, map.getProjectionObject()), zoom);
+	    },
+	    error: function(e){
+		console.dir(e);
+		alert(e.statusText);
+	    }
+	   });
 
-    //map.zoomToMaxExtent();
 
 }

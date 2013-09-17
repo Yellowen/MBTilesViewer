@@ -2,7 +2,9 @@ import sys
 import tornado.ioloop
 import tornado.web
 import os
+
 from mbtiles import MbtileSet
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -65,16 +67,16 @@ class MbtilesHandler(tornado.web.RequestHandler):
             else:
                 self.write(tile.get_json())
 
-
 if __name__ == "__main__":
 
     ## if len(sys.argv) < 3:
     ##     print "mbserv port mbfile"
     ##     print "You have to provide an mbtile file and a port"
 
-    print ">>>>>>> ", os.environ
+    print "MBServ v0.10.3\n"
     mbtilefile = os.environ["servfile"]
-    port =  sys.argv[1]  # os.environ["servport"]
+    port = os.environ["servport"]
+    print ">> Serving %s file" % mbtilefile
 
     urls = [
         (r"/", MainHandler),
