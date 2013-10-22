@@ -7,7 +7,7 @@
     "window": {
 	"title": "MBTile viewer",
 	"icon": "logo.png",
-	"toolbar": true,
+	"toolbar": false,
 	"frame": false,
 	"width": 800,
 	"height": 500,
